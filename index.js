@@ -25,8 +25,15 @@ client.connect(err => {
         productCollection.insertOne(product)
             .then(result => {
                 console.log('data added success');
-                res.send('success')
+                res.sendFile(__dirname + '/index.html')
             })
+    });
+
+    app.get('/products', (req,res)=>{
+        productCollection.find({})
+        .toArray( (err, docs) =>{
+            res.send(docs)
+        })
     })
   
 });

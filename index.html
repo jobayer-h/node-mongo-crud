@@ -15,5 +15,23 @@
         <input type="submit" value="Add Product to Inventory">
     
     </form>
+
+    <div id="Product">
+
+    </div>
+
+    <script>
+        fetch('http://localhost:3000/products')
+        .then(res => res.json())
+        .then(products => {
+            products.map(pd => {
+                const container = document.getElementById('Product');
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${pd.name}</strong> --- Price = ${pd.price} $ , Quantity = ${pd.quantity} items left` ;
+
+                container.appendChild(p);
+            })
+        })
+    </script>
 </body>
 </html>
