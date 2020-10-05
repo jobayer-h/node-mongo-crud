@@ -27,11 +27,23 @@
             products.map(pd => {
                 const container = document.getElementById('Product');
                 const p = document.createElement('p');
-                p.innerHTML = `<strong>${pd.name}</strong> --- Price = ${pd.price} $ , Quantity = ${pd.quantity} items left` ;
+                p.innerHTML = `<strong>${pd.name}</strong> --- Price = ${pd.price} $ , Quantity = ${pd.quantity} items left
+                    <button onclick="deleteItem('${pd._id}')" >Delete</button>
+                ` ;
 
                 container.appendChild(p);
             })
         })
+        
+
+        const deleteItem = (id) =>{
+            fetch(`/delete/${id}`,{
+                method:'DELETE',
+
+            });
+            
+        document.location.reload()
+        }
     </script>
 </body>
 </html>

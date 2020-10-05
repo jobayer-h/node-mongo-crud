@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const ObjectId = require('mongodb').ObjectID;
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://nodeDbUser:eJ1P1pYWtqbcjBur@cluster0.n4z9q.mongodb.net/organicDb?retryWrites=true&w=majority";
@@ -24,18 +25,21 @@ client.connect(err => {
         const product = req.body;
         productCollection.insertOne(product)
             .then(result => {
-                console.log('data added success');
                 res.sendFile(__dirname + '/index.html')
             })
     });
-
+    
     app.get('/products', (req,res)=>{
         productCollection.find({})
         .toArray( (err, docs) =>{
             res.send(docs)
         })
-    })
-  
+    });
+
+    app.delete('/delete/:id', (req,res) => {
+        productCollection.deleteOne({_id:ObjectId(req.params.id)})
+        
+    })   
 });
 
 
