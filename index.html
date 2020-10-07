@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home page</title>
+    <title>Home page</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
 <body>
     <h1>Welcome To Organic Product Commerce</h1>
 
-    <form action="/addProduct" method="post">
-        <input type="text" name="name" placeholder="Product Name">
-        <input type="text" name="price" placeholder="Product Price">
-        <input type="text" name="quantity" placeholder="Product Quantity">
-        <input type="submit" value="Add Product to Inventory">
+    <form class="form-inline" action="/addProduct" method="post">
+        <input class="form-control" type="text" name="name" placeholder="Product Name">
+        <input class="form-control" type="text" name="price" placeholder="Product Price">
+        <input class="form-control" type="text" name="quantity" placeholder="Product Quantity">
+        <input class="btn btn-success" type="submit" value="Add Product to Inventory">
     
     </form>
+    <br>
+    <hr>
+    <br>
 
-    <div id="Product">
-
-    </div>
+    <div id="Product"></div>
+    <br>
+    <br>
+    <div id="update"></div>
 
     <script>
         fetch('http://localhost:3000/products')
@@ -27,21 +31,58 @@
             products.map(pd => {
                 const container = document.getElementById('Product');
                 const p = document.createElement('p');
-                p.innerHTML = `<strong>${pd.name}</strong> --- Price = ${pd.price} $ , Quantity = ${pd.quantity} items left
-                    <button onclick="deleteItem('${pd._id}')" >Delete</button>
+                p.innerHTML = `
+                <strong>${pd.name}</strong> --- Price = $ ${pd.price} , Quantity = ${pd.quantity} items left
+                <button class="btn btn-primary" onclick="loadProduct('${pd._id}')" >Update</button>
+                <button class="btn btn-danger" onclick="deleteItem('${pd._id}')" >Delete</button>
                 ` ;
 
                 container.appendChild(p);
             })
-        })
-        
+        });
+        const cancel = () =>{
+            const update = document.getElementById('update');
+                update.innerHTML= '';
+        }
+        const updateData = (id) =>{
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const quantity = document.getElementById('quantity').value;
+            const product = {id,name,price,quantity};
 
+            fetch(`/update/${id}`,{
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(product)
+            });
+            document.location.reload()
+        }
+        const loadProduct = (id) => {
+            fetch(`product/${id}`)
+            .then(res => res.json())
+            .then(data =>{
+                const update = document.getElementById('update');
+                update.innerHTML= `
+                    <strong>Updating : ${data._id} / ${data.name} </strong>
+                    <br>
+                    <br>
+                    <strong>Name : </strong> <input id="name" type="text" name="name" value = ${data.name}>
+                    <br>
+                    <strong>Price : </strong> <input id="price" type="text" name="price" value = ${data.price}>
+                    <br>
+                    <strong>Quantity : </strong> <input id="quantity" type="text" name="quantity" value = ${data.quantity}>
+                    <br>
+                    <br>
+                    <button class="btn btn-success" onclick="updateData('${data._id}')">Save Change</button>
+                    <button class="btn btn-warning" onclick="cancel()">Cancel</button>
+                `;
+            })
+        }
         const deleteItem = (id) =>{
             fetch(`/delete/${id}`,{
                 method:'DELETE',
-
             });
-            
+
         document.location.reload()
         }
     </script>

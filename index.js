@@ -25,16 +25,32 @@ client.connect(err => {
         const product = req.body;
         productCollection.insertOne(product)
             .then(result => {
-                res.sendFile(__dirname + '/index.html')
+                // res.sendFile(__dirname + '/index.html');
+                res.redirect('/')
             })
     });
-    
+
     app.get('/products', (req,res)=>{
         productCollection.find({})
         .toArray( (err, docs) =>{
             res.send(docs)
         })
     });
+    //update item 
+    app.get('/product/:id', (req,res)=>{
+        productCollection.find({_id:ObjectId(req.params.id)})
+        .toArray( (err, docs) =>{
+            res.send(docs[0]);
+        })
+    });
+
+
+    app.patch('/update/:id', (req,res) => {
+        productCollection.updateOne({_id:ObjectId(req.params.id)},
+        {
+            $set: {price: req.body.price, quantity: req.body.quantity, name:req.body.name}
+        })
+    })
 
     app.delete('/delete/:id', (req,res) => {
         productCollection.deleteOne({_id:ObjectId(req.params.id)})
