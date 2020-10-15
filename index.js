@@ -9,8 +9,8 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// db user = nodeDbUser
-// password = eJ1P1pYWtqbcjBur
+const port = 3000;
+
 app.get('/',(req,res) => {
     res.sendFile(__dirname + '/index.html')
 })
@@ -60,4 +60,4 @@ client.connect(err => {
 
 
 
-app.listen(3000)
+app.listen(process.env.PORT || port)
