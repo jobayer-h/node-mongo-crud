@@ -25,7 +25,7 @@
     <div id="update"></div>
 
     <script>
-        fetch('http://localhost:3000/products')
+        fetch('/products')
         .then(res => res.json())
         .then(products => {
             products.map(pd => {
